@@ -95,8 +95,20 @@ static int add_if_label(uint32_t input_line, char* str, uint32_t byte_offset,
  * Implement the Following
  *******************************/
 
+/*  A helpful helper function that parses instruction arguments. It raises an error
+    if too many arguments have been passed into the instruction.
+*/
 static int parse_args(uint32_t input_line, char** args, int* num_args) {
-    /* YOUR CODE HERE */
+    char* token;
+    while ((token = strtok(NULL, IGNORE_CHARS))) {
+        if (*num_args < MAX_ARGS) {
+            args[*num_args] = token;
+            (*num_args)++;
+        } else {
+            raise_extra_arg_error(input_line, token);
+            return -1;
+        }
+    }
     return 0;
 }
 
@@ -125,8 +137,35 @@ static int parse_args(uint32_t input_line, char** args, int* num_args) {
    it should return 0.
  */
 int pass_one(FILE* input, FILE* output, SymbolTable* symtbl) {
-        /* YOUR CODE HERE */
-        return -1;
+    /* YOUR CODE HERE */
+    char buf[BUF_SIZE];
+    uint32_t input_line = 0, byte_offset = 0;
+    int ret_code = 0;
+
+
+     // Read lines and add to instructions
+    while(fgets(buf, BUF_SIZE, input)) {
+        input_line++;
+
+        // Ignore comments
+        skip_comment(buf);
+
+        // Scan for the instruction name
+    	char* token = strtok(buf, IGNORE_CHARS);
+
+        // Scan for arguments
+        char* args[MAX_ARGS];
+        int num_args = 0;
+
+    	// Checks to see if there were any errors when writing instructions
+        unsigned int lines_written = write_pass_one(output, token, args, num_args);
+        if (lines_written == 0) {
+            raise_inst_error(input_line, token, args, num_args);
+            ret_code = -1;
+        } 
+        byte_offset += lines_written * 4;
+    }       
+    return -1;
 }
 
 /* Reads an intermediate file and translates it into machine code. You may assume:

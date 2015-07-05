@@ -30,7 +30,7 @@ const int TWO_POW_SEVENTEEN = 131072;    // 2^17
         a lui-ori pair.
         
 
-   For addu, blt, and traddu:
+   For move, blt, bgt, and traddu:
     - your expansion should use the fewest number of instructions possible.
 
    MARS has slightly different translation rules for li, and it allows numbers
@@ -50,6 +50,9 @@ unsigned write_pass_one(FILE* output, const char* name, char** args, int num_arg
         /* YOUR CODE HERE */
         return 0;  
     } else if (strcmp(name, "blt") == 0) {
+        /* YOUR CODE HERE */
+        return 0;  
+    } else if (strcmp(name, "bgt") == 0) {
         /* YOUR CODE HERE */
         return 0;  
     } else if (strcmp(name, "traddu") == 0) {
@@ -132,39 +135,96 @@ int write_shift(uint8_t funct, FILE* output, char** args, size_t num_args) {
     return 0;
 }
 
-/* MORE WRITE_* FUNCTIONS BELOW */
+/* The rest of your write_*() functions below */
 
 int write_jr(uint8_t funct, FILE* output, char** args, size_t num_args) {
-    /* YOUR CODE HERE */
+    // Perhaps perform some error checking?
+
+    int rs = translate_reg(args[0]);
+
+    uint32_t instruction = 0;
+    write_inst_hex(output, instruction);
     return 0;
 }
 
 int write_addiu(uint8_t opcode, FILE* output, char** args, size_t num_args) {
-    /* YOUR CODE HERE */
+    // Perhaps perform some error checking?
+    
+    long int imm;
+    int rt = translate_reg(args[0]);
+    int rs = translate_reg(args[1]);
+    int err = translate_num(&imm, args[2], INT16_MIN, INT16_MAX);
+
+
+    uint32_t instruction = 0;
+    write_inst_hex(output, instruction);
     return 0;
 }
 
 int write_ori(uint8_t opcode, FILE* output, char** args, size_t num_args) {
-    /* YOUR CODE HERE */
+    // Perhaps perform some error checking?
+    
+    long int imm;
+    int rt = translate_reg(args[0]);
+    int rs = translate_reg(args[1]);
+    int err = translate_num(&imm, args[2], 0, UINT16_MAX);
+
+    uint32_t instruction = 0;
+    write_inst_hex(output, instruction);
     return 0;
 }
 
 int write_lui(uint8_t opcode, FILE* output, char** args, size_t num_args) {
-    /* YOUR CODE HERE */
+    // Perhaps perform some error checking?
+    
+    long int imm;
+    int rt = translate_reg(args[0]);
+    int err = translate_num(&imm, args[1], 0, UINT16_MAX);
+
+    uint32_t instruction = 0;
+    write_inst_hex(output, instruction);
     return 0;
 }
 
 int write_mem(uint8_t opcode, FILE* output, char** args, size_t num_args) {
-    /* YOUR CODE HERE */
+    // Perhaps perform some error checking?
+    
+    long int imm;
+    int rt = translate_reg(args[0]);
+    int rs = translate_reg(args[2]);
+    int err = translate_num(&imm, args[1], INT16_MIN, INT16_MAX);
+
+    uint32_t instruction =0;
+    write_inst_hex(output, instruction);
     return 0;
 }
 
+/*  A helper function to determine if a destination address
+    can be branched to
+*/
+static int can_branch_to(uint32_t src_addr, uint32_t dest_addr) {
+    int32_t diff = dest_addr - src_addr;
+    return (diff >= 0 && diff <= TWO_POW_SEVENTEEN) || (diff < 0 && diff >= -(TWO_POW_SEVENTEEN - 4));
+}
+
+
 int write_branch(uint8_t opcode, FILE* output, char** args, size_t num_args, uint32_t addr, SymbolTable* symtbl) {
-    /* YOUR CODE HERE */    
+    // Perhaps perform some error checking?
+    
+    int rs = translate_reg(args[0]);
+    int rt = translate_reg(args[1]);
+    int label_addr = get_addr_for_symbol(symtbl, args[2]);
+
+    int32_t offset = 0;
+    uint32_t instruction = 0;
+    write_inst_hex(output, instruction);        
     return 0;
 }
 
 int write_jump(uint8_t opcode, FILE* output, char** args, size_t num_args, uint32_t addr, SymbolTable* reltbl) {
     /* YOUR CODE HERE */
+    
+    uint32_t instruction = 0;
+    write_inst_hex(output, instruction);
     return 0;
 }

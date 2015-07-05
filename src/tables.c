@@ -55,7 +55,13 @@ void free_table(SymbolTable* table) {
 
 /* A suggested helper function for copying the contents of a string. */
 static char* create_copy_of_str(const char* str) {
-    /* YOUR CODE HERE */
+    size_t len = strlen(str) + 1;
+    char *buf = (char *) malloc(len);
+    if (!buf) {
+       allocation_failed();
+    }
+    strncpy(buf, str, len); 
+    return buf;
 }
 
 /* Adds a new symbol and its address to the SymbolTable pointed to by TABLE. 
