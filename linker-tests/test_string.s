@@ -14,8 +14,7 @@
 .data
 test_str1:		.asciiz "a9bw enijn webb"
 test_str2:		.asciiz "a9bw en"
-test_str3:		.asciiz "a9b qq"
-test_str4:		.asciiz ""
+test_str3:		.asciiz ""
 
 .globl main
 .text
@@ -24,9 +23,6 @@ test_str4:		.asciiz ""
 #-------------------------------------------
 main:
 	print_str(test_header_name)
-	
-	#print_newline()
-	#jal test_streq
 
 	print_newline()
 	jal test_strlen
@@ -39,38 +35,6 @@ main:
 	
 	li $v0, 10
 	syscall
-	
-#-------------------------------------------
-# Tests streq()
-#-------------------------------------------
-test_streq:
-	addiu $sp, $sp, -4
-	sw $ra, 0($sp)
-	print_str(test_streq_name)
-	
-	la $a0, test_str1
-	la $a1, test_str2
-	jal streq
-	check_int_equals($v0, -1)
-	
-	la $a0, test_str1
-	la $a1, test_str3
-	jal streq
-	check_int_equals($v0, -1)
-	
-	la $a0, test_str1
-	la $a1, test_str1
-	jal streq
-	check_int_equals($v0, 0)
-	
-	la $a0, test_str4
-	la $a1, test_str2
-	jal streq
-	check_int_equals($v0, -1)
-
-	lw $ra, 0($sp)
-	addiu $sp, $sp, 4
-	jr $ra
 
 #-------------------------------------------
 # Tests strlen()
@@ -84,7 +48,7 @@ test_strlen:
 	jal strlen
 	check_uint_equals($v0, 15)
 	
-	la $a0, test_str4
+	la $a0, test_str3
 	jal strlen
 	check_uint_equals($v0, 0)
 	
@@ -144,13 +108,12 @@ test_copy_of_str:
 	lw $s0, 8($sp)
 	lw $s1, 4($sp)
 	lw $ra, 0($sp)
-	addiu $sp, $sp, 12
+	addiu $sp, $sp, 4
 	jr $ra
 
 .data
 test_header_name:	.asciiz "Running util tests:\n"
 
-test_streq_name:	.asciiz "Testing streq():\n"
 test_strlen_name:	.asciiz "Testing strlen():\n"
 test_strncpy_name:	.asciiz "Testing strncpy():\n"
 test_copy_of_str_name:	.asciiz "Testing copy_of_str():\n"
